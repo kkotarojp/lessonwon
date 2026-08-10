@@ -87,14 +87,101 @@
 
   /* ---------- Reveal ---------- */
   var reveals = document.querySelectorAll('.reveal');
+  function revealAll() { Array.prototype.forEach.call(reveals, function (el) { el.classList.add('is-in'); }); }
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
-    reveals.forEach(function (el) { io.observe(el); });
+    Array.prototype.forEach.call(reveals, function (el) { io.observe(el); });
+    /* 保険: 監視が何らかの理由で動かなくても、本文が見えないままにはしない */
+    setTimeout(function () {
+      if (reveals.length && !document.querySelector('.reveal.is-in')) revealAll();
+    }, 3000);
   } else {
-    reveals.forEach(function (el) { el.classList.add('is-in'); });
+    revealAll();
   }
+
+  /* ---------- FVの写真バンド(自動で流す + 指/マウスで回せる) ----------
+     CSSアニメーションではなく scrollLeft で動かすことで、
+     ネイティブの横スワイプと同じ操作感になる。 */
+  var bands = document.querySelectorAll('.fv__band');
+  Array.prototype.forEach.call(bands, function (band) {
+    var track = band.querySelector('.fv__bandtrack');
+    if (!track) return;
+
+    /* 同じ8枚を2周分ならべてあるので、半分進んだら先頭に戻せば継ぎ目が出ない */
+    var half = 0;
+    function measure() {
+      half = track.scrollWidth / 2;
+      if (band.scrollLeft > half) band.scrollLeft -= half;
+    }
+    measure();
+    window.addEventListener('resize', measure);
+    if (window.ResizeObserver) new ResizeObserver(measure).observe(track);
+
+    /* 下段は逆向き。開始位置を中央にしておくと、左へ戻る余地ができる */
+    var dir = band.classList.contains('fv__band--bottom') ? -1 : 1;
+    var speed = dir > 0 ? 0.017 : 0.014;   /* px/ミリ秒。端末のリフレッシュレートに依存させない */
+
+    var holding = false, resumeAt = 0, last = 0;
+    /* scrollLeft は小数が丸められることがあり += 0.3 では進まないので、位置はJS側で持つ */
+    var pos = dir < 0 ? half : 0;
+    band.scrollLeft = pos;
+
+    function wrap() {
+      if (pos >= half) pos -= half;
+      else if (pos < 0) pos += half;
+    }
+
+    function tick(now) {
+      requestAnimationFrame(tick);
+      if (half <= 0) return;
+      var dt = last ? Math.min(now - last, 64) : 0;
+      last = now;
+      if (holding) {          /* 指を置いている間は実際の位置に追従するだけ */
+        pos = band.scrollLeft;
+        return;
+      }
+      if (now < resumeAt) {   /* 慣性スクロール中。位置は追うが、継ぎ目だけ繋ぐ */
+        pos = band.scrollLeft;
+        var before = pos; wrap();
+        if (pos !== before) band.scrollLeft = pos;
+        return;
+      }
+      pos += speed * dir * dt;
+      wrap();
+      band.scrollLeft = pos;
+    }
+    if (!reduceMotion) requestAnimationFrame(tick);
+
+    /* 触れている間は自動送りを止め、離してから少し待って再開 */
+    function hold() { holding = true; }
+    function release() { holding = false; resumeAt = performance.now() + 1200; }
+    band.addEventListener('pointerdown', hold);
+    band.addEventListener('touchstart', hold, { passive: true });
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
+    band.addEventListener('touchend', release, { passive: true });
+    /* ホイールの横スクロール中も少し待つ(scrollイベントは自動送り自身が発火させるため使わない) */
+    band.addEventListener('wheel', function () { resumeAt = performance.now() + 900; }, { passive: true });
+
+    /* マウスはネイティブのドラッグスクロールが効かないので自前で動かす */
+    var dragging = false, startX = 0, startLeft = 0;
+    band.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      dragging = true; startX = e.clientX; startLeft = band.scrollLeft;
+      band.setPointerCapture(e.pointerId);
+      band.classList.add('is-dragging');
+      e.preventDefault();
+    });
+    band.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      band.scrollLeft = startLeft - (e.clientX - startX);
+    });
+    band.addEventListener('pointerup', function () { dragging = false; band.classList.remove('is-dragging'); });
+    band.addEventListener('pointercancel', function () { dragging = false; band.classList.remove('is-dragging'); });
+  });
+
 })();

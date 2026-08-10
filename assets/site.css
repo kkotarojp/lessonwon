@@ -114,13 +114,18 @@ html.js .preloader.is-play .preloader__panel--a { animation: pre-panel 1s 1.05s 
 .fv__bg { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); overflow: hidden; white-space: nowrap; user-select: none; pointer-events: none; }
 .fv__bgtrack { display: inline-block; font-family: var(--en); font-weight: 800; font-size: clamp(120px, 26vw, 340px); letter-spacing: -.03em; line-height: 1; color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 12%, transparent); animation: marquee 40s linear infinite; }
 
-/* ロゴの上下を流れる写真バンド(装飾) */
-.fv__band { width: 100%; min-height: 0; justify-self: stretch; overflow: hidden; user-select: none; pointer-events: none;
+/* ロゴの上下を流れる写真バンド(装飾)。
+   自動送りと指スワイプを両立させるため、CSSアニメーションではなく
+   横スクロール領域にして site.js の scrollLeft で動かしている。 */
+.fv__band { width: 100%; min-height: 0; justify-self: stretch; user-select: none; cursor: grab;
+  overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
+  scrollbar-width: none; -ms-overflow-style: none;
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 13%, #000 87%, transparent 100%);
   mask-image: linear-gradient(90deg, transparent 0%, #000 13%, #000 87%, transparent 100%); }
-.fv__bandtrack { display: flex; width: max-content; opacity: .88; animation: marquee 80s linear infinite; }
-/* 下段は逆向き・少し遅く流して、上下が同じ動きに見えないようにする */
-.fv__band--bottom .fv__bandtrack { animation-duration: 96s; animation-direction: reverse; }
+.fv__band::-webkit-scrollbar { display: none; }
+.fv__band.is-dragging { cursor: grabbing; }
+.fv__bandtrack { display: flex; width: max-content; opacity: .88; }
+/* JSが動かない環境でも静止した写真の帯として成立する */
 /* gapではなくmargin-rightで間隔をとる(translateX(-50%)のループ位置をぴったり合わせるため) */
 .fv__bandtrack img { display: block; flex: none; height: clamp(72px, 15vh, 158px); width: auto; aspect-ratio: 4 / 3; object-fit: cover;
   margin-right: clamp(10px, 1.2vw, 16px); border-radius: clamp(12px, 1.4vw, 20px); }
@@ -430,6 +435,16 @@ html.home .snap2 { scroll-snap-align: start; }
 .p-bring__note { margin-top: 16px; font-size: 12.5px; color: var(--ink-2); }
 @media (max-width: 639px) { .p-bring__list { grid-template-columns: 1fr; } }
 
+/* トップ3画面目のお店紹介 */
+.home-intro__lead { max-width: 46em; font-size: clamp(14px, 1.35vw, 16px); line-height: 2; color: var(--ink-2); }
+.home-intro__foot { margin-top: clamp(26px, 3.5vw, 40px); display: grid; gap: 12px; }
+.home-intro__foot p { font-size: 13.5px; line-height: 1.9; color: var(--ink-2); }
+.home-intro__foot b { display: inline-block; min-width: 8.5em; font-weight: 900; color: var(--ink); letter-spacing: .06em; }
+.home-intro .p-cta { margin-top: clamp(34px, 4.5vw, 52px); }
+@media (max-width: 639px) {
+  .home-intro__foot b { display: block; min-width: 0; margin-bottom: 2px; }
+}
+
 .p-grid { display: grid; gap: 16px; }
 .p-grid--2 { grid-template-columns: repeat(2, 1fr); }
 .p-grid--3 { grid-template-columns: repeat(3, 1fr); }
@@ -467,7 +482,9 @@ html.home .snap2 { scroll-snap-align: start; }
   .p-table-wrap { overflow-x: visible; }
   .p-table { min-width: 0; display: block; }
   .p-table thead { display: none; }
-  .p-table caption { padding: 16px 18px 4px; }
+  /* 表をブロック化すると caption が table-caption のまま最小幅に潰れ、
+     1文字ずつ縦に折り返してしまう。必ず block に戻すこと。 */
+  .p-table caption { display: block; width: 100%; padding: 16px 18px 4px; }
   .p-table tbody, .p-table tbody tr, .p-table tbody th, .p-table tbody td { display: block; }
   .p-table tbody tr { padding: 13px 18px; border-bottom: 1px solid var(--line); }
   .p-table tbody tr:last-child { border-bottom: 0; }
@@ -572,9 +589,49 @@ html.home .snap2 { scroll-snap-align: start; }
   .pd-row__note { display: block; margin-left: 0; }
   .mbar { display: grid; }
   .footer { padding-bottom: 130px; }
-  .mosaic__grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: minmax(120px, auto); gap: 10px; }
-  .mtile { padding: 18px 18px; border-radius: 18px; }
-  .mosaic { padding-bottom: 110px; }
+
+  /* 特徴カードは、アイコンを左に置いた横並びにして縦の伸びを抑える
+     (縦積みのままだと1ページが7000px近くになり、読み進めるのがつらい) */
+  .p-card { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; padding: 18px 18px 17px; }
+  .p-card__icon { grid-row: 1 / 3; width: 40px; height: 40px; margin-bottom: 0; margin-top: 2px; }
+  .p-card__title { grid-column: 2; font-size: 15px; margin-bottom: 5px; }
+  .p-card__text { grid-column: 2; font-size: 13px; }
+  .p-grid { gap: 10px; }
+
+  /* タイル面もPCと同じく1画面にぴったり収める。
+     スマホでは縦長タイルをやめて全タイル1行にし、ホテルだけ横2列の主役タイルにする。 */
+  /* height を確定値にしないと 1fr が効かず、行がタイルの中身なりに伸びてしまう */
+  .mosaic { height: 100svh; min-height: 620px; display: flex; flex-direction: column;
+    padding-top: 64px; padding-bottom: calc(102px + env(safe-area-inset-bottom)); }
+  .mosaic__grid { flex: 1; min-height: 0; grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, minmax(0, 1fr)); grid-auto-rows: unset; gap: 8px; }
+  .mtile--tall { grid-row: span 1; }
+  .mtile--hotel { grid-column: span 2; }
+  .mtile { padding: 10px 14px; border-radius: 16px; }
+  /* スマホでは主役タイルも同じ文字量にそろえる(1行の高さに収めるため) */
+  .mtile__en, .mtile--big .mtile__en { font-size: 20px; }
+  .mtile__name, .mtile--big .mtile__name { font-size: 12px; margin-top: 3px; }
+  .mtile__jp, .mtile--big .mtile__jp { font-size: 9.5px; margin-top: 1px; }
+  .mtile__icon, .mtile--big .mtile__icon { width: 50px; height: 50px; }
+  .mtile--hotel .mtile__icon { width: 62px; height: 62px; }
+  .mtile--brand { padding: 8px 12px; }
+  .mtile__logo { width: 30px; height: 30px; }
+  .mtile__brandname { font-size: 12px; margin-top: 4px; }
+  .mtile__brandsub { font-size: 8px; margin-top: 2px; }
+  .mtile__soon { top: 8px; right: 9px; font-size: 9px; padding: 2px 7px; }
+  /* トップはフッターを置かないので、最後のセクションで固定バーぶんの余白を確保する */
+  .home-intro { padding-bottom: calc(124px + env(safe-area-inset-bottom)); }
+}
+/* 画面の短い端末(iPhone SE / 8 など)は1行あたりが薄くなるので、補足文を落として収める */
+@media (max-width: 767px) and (max-height: 700px) {
+  .mosaic { padding-top: 54px; }
+  .mtile { padding: 8px 12px; }
+  .mtile__jp, .mtile--big .mtile__jp { display: none; }
+  .mtile__brandsub { display: none; }
+  .mtile__en, .mtile--big .mtile__en { font-size: 18px; }
+  .mtile__name, .mtile--big .mtile__name { font-size: 11px; letter-spacing: .04em; margin-top: 2px; }
+  .mtile__logo { width: 26px; height: 26px; }
+  .mtile__brandname { font-size: 11px; margin-top: 2px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
