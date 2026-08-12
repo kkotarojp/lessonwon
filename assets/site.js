@@ -103,85 +103,149 @@
     revealAll();
   }
 
+  /* ---------- お問い合わせフォーム(飼い主さま / 法人・団体さま の2窓口) ----------
+     送信先(CONTACT_FORM_ENDPOINT)が未設定のうちはフォームを出さず、
+     お電話のご案内だけを表示する。 */
+  var cwrap = document.getElementById('cform-wrap');
+  if (cwrap) {
+    var endpoint = (typeof CONTACT_FORM_ENDPOINT === 'string' ? CONTACT_FORM_ENDPOINT : '').trim();
+    var fallback = document.getElementById('cform-fallback');
+
+    /* --- タブ切り替え(送信先の有無にかかわらず動かす) --- */
+    var tabs = cwrap.querySelectorAll('.cform__tab');
+    function showPane(id) {
+      Array.prototype.forEach.call(tabs, function (t) {
+        var on = t.getAttribute('data-pane') === id;
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      Array.prototype.forEach.call(cwrap.querySelectorAll('.cform__pane'), function (p) {
+        p.hidden = p.id !== id;
+      });
+    }
+    Array.prototype.forEach.call(tabs, function (t) {
+      t.addEventListener('click', function () { showPane(t.getAttribute('data-pane')); });
+    });
+    /* ?biz や #biz で来たら法人窓口を開いた状態にする(名刺やメールから直接誘導できる) */
+    var wantBiz = /(^|[?&#])biz\b/.test(location.search + location.hash);
+    showPane(wantBiz ? 'pane-biz' : 'pane-private');
+
+    if (endpoint) {
+      cwrap.hidden = false;
+      if (fallback) fallback.hidden = true;
+
+      Array.prototype.forEach.call(cwrap.querySelectorAll('form.cform'), function (form) {
+        form.setAttribute('action', endpoint);
+        var btn = form.querySelector('button[type="submit"]');
+        var status = form.querySelector('.cform__status');
+        var group = form.querySelector('[data-required-group]');
+
+        function say(msg, cls) { status.textContent = msg; status.className = 'cform__status' + (cls ? ' ' + cls : ''); }
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          say('');
+          /* チェックは1つ以上えらんでもらう(HTMLのrequiredでは表現できないため) */
+          if (group && !group.querySelector('input:checked')) {
+            say('1つ以上お選びください。', 'is-ng');
+            group.querySelector('input').focus();
+            return;
+          }
+          if (!form.checkValidity()) {
+            var bad = form.querySelector(':invalid');
+            say('未入力の項目があります。ご確認ください。', 'is-ng');
+            if (bad) bad.focus();
+            return;
+          }
+          btn.disabled = true;
+          say('送信しています…');
+          fetch(endpoint, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+          }).then(function (res) {
+            if (!res.ok) throw new Error(res.status);
+            /* 送信できたらフォームを片づけて、お礼だけを残す */
+            cwrap.innerHTML = '<div class="cform__done"><strong>送信しました。ありがとうございます。</strong>' +
+              '<p>2営業日以内にご返信いたします。<br>お急ぎの場合は <a href="tel:0774223005">0774-22-3005</a> までお電話ください。</p></div>';
+            cwrap.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+          }).catch(function () {
+            btn.disabled = false;
+            say('送信できませんでした。恐れ入りますが 0774-22-3005 までお電話ください。', 'is-ng');
+          });
+        });
+      });
+    }
+  }
+
   /* ---------- FVの写真バンド(自動で流す + 指/マウスで回せる) ----------
-     CSSアニメーションではなく scrollLeft で動かすことで、
-     ネイティブの横スワイプと同じ操作感になる。 */
+     scrollLeft は端で頭打ちになり、小数も丸められてカクつくため使わない。
+     transform で動かし、半周ぶん進んだら位置を戻すことで途切れなく循環させる。 */
   var bands = document.querySelectorAll('.fv__band');
   Array.prototype.forEach.call(bands, function (band) {
     var track = band.querySelector('.fv__bandtrack');
     if (!track) return;
 
-    /* 同じ8枚を2周分ならべてあるので、半分進んだら先頭に戻せば継ぎ目が出ない */
+    /* 同じ8枚を2周分ならべてあるので、半周ぶんで位置を戻せば継ぎ目が出ない。
+       offsetWidth は transform の影響を受けないので実寸がとれる。 */
     var half = 0;
-    function measure() {
-      half = track.scrollWidth / 2;
-      if (band.scrollLeft > half) band.scrollLeft -= half;
-    }
+    function measure() { half = track.offsetWidth / 2; }
     measure();
     window.addEventListener('resize', measure);
     if (window.ResizeObserver) new ResizeObserver(measure).observe(track);
 
-    /* 下段は逆向き。開始位置を中央にしておくと、左へ戻る余地ができる */
     var dir = band.classList.contains('fv__band--bottom') ? -1 : 1;
-    var speed = dir > 0 ? 0.017 : 0.014;   /* px/ミリ秒。端末のリフレッシュレートに依存させない */
+    var speed = dir > 0 ? 52 : 41;        /* px/秒。上下で変えて同じ動きに見えないようにする */
 
-    var holding = false, resumeAt = 0, last = 0;
-    /* scrollLeft は小数が丸められることがあり += 0.3 では進まないので、位置はJS側で持つ */
-    var pos = dir < 0 ? half : 0;
-    band.scrollLeft = pos;
+    var offset = 0, prevTime = 0, velocity = 0;
+    var dragging = false, startX = 0, startOffset = 0, lastX = 0, lastT = 0;
 
-    function wrap() {
-      if (pos >= half) pos -= half;
-      else if (pos < 0) pos += half;
-    }
+    function normalize() { if (half > 0) offset = ((offset % half) + half) % half; }
+    function apply() { track.style.transform = 'translate3d(' + (-offset).toFixed(2) + 'px,0,0)'; }
 
     function tick(now) {
       requestAnimationFrame(tick);
-      if (half <= 0) return;
-      var dt = last ? Math.min(now - last, 64) : 0;
-      last = now;
-      if (holding) {          /* 指を置いている間は実際の位置に追従するだけ */
-        pos = band.scrollLeft;
-        return;
+      if (half <= 0) { measure(); return; }
+      var dt = prevTime ? Math.min((now - prevTime) / 1000, 0.05) : 0;
+      prevTime = now;
+      if (dragging) return;
+      if (Math.abs(velocity) > 8) {       /* 指を離したあとの惰性 */
+        offset += velocity * dt;
+        velocity *= Math.pow(0.06, dt);   /* 1秒で約6%まで減衰 */
+      } else {
+        velocity = 0;
+        if (!reduceMotion) offset += speed * dir * dt;
       }
-      if (now < resumeAt) {   /* 慣性スクロール中。位置は追うが、継ぎ目だけ繋ぐ */
-        pos = band.scrollLeft;
-        var before = pos; wrap();
-        if (pos !== before) band.scrollLeft = pos;
-        return;
-      }
-      pos += speed * dir * dt;
-      wrap();
-      band.scrollLeft = pos;
+      normalize();
+      apply();
     }
-    if (!reduceMotion) requestAnimationFrame(tick);
+    requestAnimationFrame(tick);
 
-    /* 触れている間は自動送りを止め、離してから少し待って再開 */
-    function hold() { holding = true; }
-    function release() { holding = false; resumeAt = performance.now() + 1200; }
-    band.addEventListener('pointerdown', hold);
-    band.addEventListener('touchstart', hold, { passive: true });
-    window.addEventListener('pointerup', release);
-    window.addEventListener('pointercancel', release);
-    band.addEventListener('touchend', release, { passive: true });
-    /* ホイールの横スクロール中も少し待つ(scrollイベントは自動送り自身が発火させるため使わない) */
-    band.addEventListener('wheel', function () { resumeAt = performance.now() + 900; }, { passive: true });
-
-    /* マウスはネイティブのドラッグスクロールが効かないので自前で動かす */
-    var dragging = false, startX = 0, startLeft = 0;
+    /* 指でもマウスでも回せるようにする。
+       touch-action: pan-y をCSSで指定してあるので、縦スワイプはページのスクロールに渡る。 */
     band.addEventListener('pointerdown', function (e) {
-      if (e.pointerType !== 'mouse') return;
-      dragging = true; startX = e.clientX; startLeft = band.scrollLeft;
+      dragging = true; velocity = 0;
+      startX = lastX = e.clientX; startOffset = offset; lastT = e.timeStamp;
       band.setPointerCapture(e.pointerId);
       band.classList.add('is-dragging');
-      e.preventDefault();
     });
     band.addEventListener('pointermove', function (e) {
       if (!dragging) return;
-      band.scrollLeft = startLeft - (e.clientX - startX);
+      offset = startOffset - (e.clientX - startX);
+      normalize();
+      apply();
+      var dt = (e.timeStamp - lastT) / 1000;
+      if (dt > 0) velocity = Math.max(-2600, Math.min(2600, -(e.clientX - lastX) / dt));
+      lastX = e.clientX; lastT = e.timeStamp;
     });
-    band.addEventListener('pointerup', function () { dragging = false; band.classList.remove('is-dragging'); });
-    band.addEventListener('pointercancel', function () { dragging = false; band.classList.remove('is-dragging'); });
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      band.classList.remove('is-dragging');
+    }
+    band.addEventListener('pointerup', endDrag);
+    band.addEventListener('pointercancel', endDrag);
+    band.addEventListener('pointerleave', endDrag);
   });
 
 })();

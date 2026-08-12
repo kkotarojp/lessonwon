@@ -115,21 +115,19 @@ html.js .preloader.is-play .preloader__panel--a { animation: pre-panel 1s 1.05s 
 .fv__bgtrack { display: inline-block; font-family: var(--en); font-weight: 800; font-size: clamp(120px, 26vw, 340px); letter-spacing: -.03em; line-height: 1; color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 12%, transparent); animation: marquee 40s linear infinite; }
 
 /* ロゴの上下を流れる写真バンド(装飾)。
-   自動送りと指スワイプを両立させるため、CSSアニメーションではなく
-   横スクロール領域にして site.js の scrollLeft で動かしている。 */
-.fv__band { width: 100%; min-height: 0; justify-self: stretch; user-select: none; cursor: grab;
-  overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain;
-  scrollbar-width: none; -ms-overflow-style: none;
+   自動送りと指スワイプを両立させるため、site.js が transform で動かしている。
+   scrollLeft は端で頭打ちになり小数も丸められるので使わない。 */
+.fv__band { width: 100%; min-height: 0; justify-self: stretch; overflow: hidden;
+  user-select: none; cursor: grab; touch-action: pan-y;   /* 縦スワイプはページのスクロールに渡す */
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 13%, #000 87%, transparent 100%);
   mask-image: linear-gradient(90deg, transparent 0%, #000 13%, #000 87%, transparent 100%); }
-.fv__band::-webkit-scrollbar { display: none; }
 .fv__band.is-dragging { cursor: grabbing; }
-.fv__bandtrack { display: flex; width: max-content; opacity: .88; }
-/* JSが動かない環境でも静止した写真の帯として成立する */
-/* gapではなくmargin-rightで間隔をとる(translateX(-50%)のループ位置をぴったり合わせるため) */
+.fv__bandtrack { display: flex; width: max-content; opacity: .88; will-change: transform; }
+/* gapではなくmargin-rightで間隔をとる(半周ぶんの折り返し位置をぴったり合わせるため) */
 .fv__bandtrack img { display: block; flex: none; height: clamp(72px, 15vh, 158px); width: auto; aspect-ratio: 4 / 3; object-fit: cover;
-  margin-right: clamp(10px, 1.2vw, 16px); border-radius: clamp(12px, 1.4vw, 20px); }
-@media (prefers-reduced-motion: reduce) { .fv__bgtrack, .fv__bandtrack { animation: none; } }
+  margin-right: clamp(10px, 1.2vw, 16px); border-radius: clamp(12px, 1.4vw, 20px);
+  pointer-events: none; -webkit-user-drag: none; }
+@media (prefers-reduced-motion: reduce) { .fv__bgtrack { animation: none; } }
 
 .fv__in { position: relative; z-index: 1; text-align: center; padding-inline: 20px; }
 .fv__mark { width: clamp(44px, 6vw, 64px); height: clamp(44px, 6vw, 64px); color: var(--terra); margin-inline: auto; }
@@ -401,14 +399,12 @@ html.home { scroll-snap-type: y proximity; scroll-behavior: smooth; }
 html.home .snap2 { scroll-snap-align: start; }
 @media (max-width: 767px), (prefers-reduced-motion: reduce) { html.home { scroll-snap-type: none; } }
 
-/* タブレット(768〜1023px): 3列・高さは自然に */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .mosaic__grid { grid-template-columns: repeat(3, 1fr); grid-auto-rows: minmax(150px, auto); }
-}
-
-/* PC(1024px〜): タイル面を1画面ぴったりに */
-@media (min-width: 1024px) {
-  .mosaic { height: 100svh; min-height: 620px; display: flex; flex-direction: column; padding-top: 82px; padding-bottom: 18px; }
+/* タブレット〜PC(768px〜): タイル面を1画面ぴったりに。
+   padding-top は固定ヘッダー(約72px)より大きくすること。
+   小さいとスナップで吸着したときに1行目がヘッダーの下に潜る。 */
+@media (min-width: 768px) {
+  .mosaic__grid { grid-template-columns: repeat(3, 1fr); }
+  .mosaic { height: 100svh; min-height: 540px; display: flex; flex-direction: column; padding-top: 88px; padding-bottom: 18px; }
   .mosaic__grid { flex: 1; min-height: 0; grid-auto-rows: unset; grid-template-rows: repeat(5, minmax(0, 1fr)); }
   .mtile { padding: 16px 20px; }
   /* 1行分のタイルは文字を控えめにして収める */
@@ -421,6 +417,63 @@ html.home .snap2 { scroll-snap-align: start; }
   .mtile__logo { width: clamp(26px, 2.6vw, 36px); height: clamp(26px, 2.6vw, 36px); }
   .mtile__brandname { font-size: 12.5px; margin-top: 3px; }
   .mtile__brandsub { font-size: 8.5px; line-height: 1.45; }
+}
+/* 縦に低いウィンドウ(横向きタブレット・小さいノートPC)は1行が薄くなるので補足文を落とす */
+@media (min-width: 768px) and (max-height: 740px) {
+  .mosaic { padding-top: 80px; padding-bottom: 14px; }
+  .mtile { padding: 12px 18px; }
+  .mtile__jp, .mtile--big .mtile__jp { display: none; }
+  .mtile__brandsub { display: none; }
+}
+
+/* ---- お問い合わせフォーム ---- */
+.cform-wrap { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: clamp(24px, 4vw, 40px); }
+.p-sec--paper .cform-wrap { background: var(--bg); border-color: transparent; }
+/* 窓口の切り替え。法人・団体向けの入口があることを、開く前から見えるようにする */
+.cform__switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: clamp(22px, 3vw, 30px); }
+.cform__tab { display: grid; gap: 3px; text-align: left; padding: 14px 18px; border-radius: 14px;
+  border: 1.5px solid var(--line); background: var(--bg); transition: border-color .2s, background .2s, color .2s; }
+.p-sec--paper .cform__tab { background: var(--paper); }
+.cform__tab b { font-size: 14.5px; font-weight: 900; letter-spacing: .06em; }
+.cform__tab small { font-size: 11.5px; line-height: 1.5; color: var(--ink-2); }
+.cform__tab:hover { border-color: var(--terra); }
+.cform__tab.is-on { background: var(--terra); border-color: var(--terra); color: #fff; }
+.cform__tab.is-on small { color: color-mix(in srgb, #fff 82%, transparent); }
+@media (max-width: 559px) { .cform__switch { grid-template-columns: 1fr; } }
+
+.cform__lead { font-size: 14px; line-height: 1.9; color: var(--ink-2); margin-bottom: clamp(22px, 3vw, 30px); }
+.cform__lead b { color: var(--ink); font-weight: 900; }
+.cform { display: grid; gap: clamp(18px, 2.4vw, 24px); }
+.cform__row { display: grid; gap: 8px; }
+.cform__label { font-size: 13.5px; font-weight: 900; letter-spacing: .06em; display: flex; align-items: center; gap: 9px; }
+.cform__req { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; color: #fff; background: var(--terra); border-radius: 999px; padding: 2px 8px; }
+.cform__input { width: 100%; font: inherit; font-size: 15px; line-height: 1.7; color: var(--ink);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 13px 15px; transition: border-color .2s, background .2s; }
+.p-sec--paper .cform__input { background: var(--paper); }
+.cform__input::placeholder { color: color-mix(in srgb, var(--ink-2) 55%, transparent); }
+.cform__input:focus { outline: none; border-color: var(--terra); background: var(--paper); }
+.cform__input:user-invalid { border-color: #C0392B; }
+.cform__textarea { resize: vertical; min-height: 130px; }
+.cform__hint { font-size: 12px; color: var(--ink-2); }
+.cform__checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; }
+.cform__checks label { display: flex; align-items: flex-start; gap: 9px; font-size: 13.5px; line-height: 1.6; cursor: pointer; }
+.cform__checks input { flex: none; width: 18px; height: 18px; margin-top: 3px; accent-color: var(--terra); }
+.cform__agree { display: flex; align-items: center; gap: 10px; font-size: 13.5px; }
+.cform__agree input { width: 18px; height: 18px; accent-color: var(--terra); flex: none; }
+.cform__agree a { color: var(--terra-deep); text-decoration: underline; text-underline-offset: 3px; }
+.cform__gotcha { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.cform__submit { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
+.cform__submit .btn { min-width: 200px; }
+.cform__submit .btn[disabled] { opacity: .55; pointer-events: none; }
+.cform__status { font-size: 13.5px; font-weight: 700; }
+.cform__status.is-ok { color: #2E7D4F; }
+.cform__status.is-ng { color: #C0392B; }
+.cform__done { text-align: center; padding: clamp(30px, 5vw, 48px) 10px; }
+.cform__done p { font-size: 14.5px; line-height: 1.95; color: var(--ink-2); }
+.cform__done strong { display: block; font-size: 17px; font-weight: 900; color: var(--ink); margin-bottom: 10px; letter-spacing: .04em; }
+@media (max-width: 639px) {
+  .cform__checks { grid-template-columns: 1fr; }
+  .cform__submit .btn { width: 100%; }
 }
 
 /* お持ちいただくもの */
@@ -601,8 +654,8 @@ html.home .snap2 { scroll-snap-align: start; }
   /* タイル面もPCと同じく1画面にぴったり収める。
      スマホでは縦長タイルをやめて全タイル1行にし、ホテルだけ横2列の主役タイルにする。 */
   /* height を確定値にしないと 1fr が効かず、行がタイルの中身なりに伸びてしまう */
-  .mosaic { height: 100svh; min-height: 620px; display: flex; flex-direction: column;
-    padding-top: 64px; padding-bottom: calc(102px + env(safe-area-inset-bottom)); }
+  .mosaic { height: 100svh; min-height: 500px; display: flex; flex-direction: column;
+    padding-top: 76px; padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
   .mosaic__grid { flex: 1; min-height: 0; grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(5, minmax(0, 1fr)); grid-auto-rows: unset; gap: 8px; }
   .mtile--tall { grid-row: span 1; }
@@ -624,7 +677,7 @@ html.home .snap2 { scroll-snap-align: start; }
 }
 /* 画面の短い端末(iPhone SE / 8 など)は1行あたりが薄くなるので、補足文を落として収める */
 @media (max-width: 767px) and (max-height: 700px) {
-  .mosaic { padding-top: 54px; }
+  .mosaic { padding-top: 72px; }
   .mtile { padding: 8px 12px; }
   .mtile__jp, .mtile--big .mtile__jp { display: none; }
   .mtile__brandsub { display: none; }
@@ -632,6 +685,15 @@ html.home .snap2 { scroll-snap-align: start; }
   .mtile__name, .mtile--big .mtile__name { font-size: 11px; letter-spacing: .04em; margin-top: 2px; }
   .mtile__logo { width: 26px; height: 26px; }
   .mtile__brandname { font-size: 11px; margin-top: 2px; }
+}
+/* 幅の狭い端末(iPhone SE など)はさらに一段小さくして1行に収める */
+@media (max-width: 360px) {
+  .mosaic { padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
+  .mtile { padding: 7px 11px; }
+  .mtile__en, .mtile--big .mtile__en { font-size: 16.5px; }
+  .mtile__name, .mtile--big .mtile__name { font-size: 10.5px; letter-spacing: .02em; }
+  .mtile__logo { width: 22px; height: 22px; }
+  .mtile__brandname { font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
