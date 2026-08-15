@@ -143,6 +143,16 @@ html.js .preloader.is-play .preloader__panel--a { animation: pre-panel 1s 1.05s 
 /* ---- FVサイン(旧バナーの文字組みをテキストで再現) ---- */
 :root { --sign-pink: #EC3899; --sign-navy: #1B3363; }
 .fv__sign { display: flex; align-items: center; justify-content: center; gap: clamp(6px, 1.8vw, 26px); }
+
+/* 弧に沿わせたロゴ。画像ではなく本物のテキスト(textPath)なので、
+   検索エンジンにも読まれ、どの画面幅でもきれいに拡大縮小する。
+   反りの強さを変えるには index.html の TOPS(弧の中央の高さ)を調整する。 */
+.fv__arch { width: clamp(200px, 58vw, 660px); height: auto; flex: none; overflow: visible; }
+.fv__arch text { font-family: "Zen Maru Gothic", var(--jp); font-weight: 900; }
+.fv__arch-t1 { font-size: 54px; letter-spacing: 4px; fill: var(--sign-navy); }
+.fv__arch-t2 { font-size: 120px; letter-spacing: 2px; fill: var(--sign-pink); }
+.fv__arch-t3 { font-size: 50px; letter-spacing: 4px; fill: var(--sign-navy); }
+.fv__arch-paw { fill: var(--sign-pink); color: var(--sign-pink); }
 .fv__lockup { font-family: "Zen Maru Gothic", var(--jp); font-weight: 900; line-height: 1.02; }
 .fv__lockup p { display: flex; align-items: center; gap: .16em; }
 .fv__lockup-top { justify-content: center; font-size: clamp(13px, 2.9vw, 31px); color: var(--sign-navy); letter-spacing: .07em; }
@@ -475,6 +485,24 @@ html.home .snap2 { scroll-snap-align: start; }
   .cform__checks { grid-template-columns: 1fr; }
   .cform__submit .btn { width: 100%; }
 }
+
+/* セクション冒頭の説明文 */
+.p-lead { max-width: 46em; margin-bottom: clamp(22px, 3vw, 30px); font-size: clamp(13.5px, 1.3vw, 15px); line-height: 1.95; color: var(--ink-2); }
+
+/* 料金の数え方。加算を並べ立てず、式とルールで淡々と示す */
+.p-count { margin-top: clamp(16px, 2.2vw, 22px); background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 26px); }
+.p-sec--paper .p-count { background: var(--bg); border-color: transparent; }
+.p-count__formula { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 14px;
+  padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.p-sec--paper .p-count__formula { border-bottom-color: color-mix(in srgb, var(--line) 70%, transparent); }
+.p-count__formula span { font-size: clamp(14px, 1.5vw, 16px); font-weight: 900; letter-spacing: .06em; }
+.p-count__formula i { font-family: var(--en); font-style: normal; font-weight: 800; font-size: 18px; color: var(--terra); }
+.p-count__rules { margin-top: 16px; display: grid; gap: 7px; }
+.p-count__rules li { position: relative; padding-left: 18px; font-size: 13.5px; line-height: 1.8; color: var(--ink-2); }
+.p-count__rules li::before { content: ""; position: absolute; left: 3px; top: .82em; width: 7px; height: 7px; border-radius: 50%; background: var(--terra); }
+.p-count__eg { margin-top: 12px; font-size: 13.5px; color: var(--ink-2); }
+.p-count__eg b { font-weight: 900; color: var(--ink); }
+.p-count__note { margin-top: 10px; font-size: 12.5px; color: var(--ink-2); }
 
 /* お持ちいただくもの */
 .p-bring { margin-top: clamp(22px, 3vw, 34px); background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: clamp(22px, 3vw, 30px); }

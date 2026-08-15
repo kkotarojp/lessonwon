@@ -103,6 +103,50 @@
     revealAll();
   }
 
+  /* ---------- FVのアーチロゴ:肉球を文字の位置に置く ----------
+     全角スペースを目印にして、その文字の座標と傾きを取り、そこへ肉球を重ねる。
+     フォントが変わっても位置がずれない。JSが動かなくても文字は読める。 */
+  var arch = document.getElementById('fvArch');
+  if (arch) {
+    var SVGNS = 'http://www.w3.org/2000/svg';
+    function placePaws() {
+      var old = arch.querySelectorAll('.fv__arch-paw');
+      Array.prototype.forEach.call(old, function (el) { el.remove(); });
+      var texts = arch.querySelectorAll('text[data-paw]');
+      Array.prototype.forEach.call(texts, function (t) {
+        var sym = t.getAttribute('data-paw');
+        var ratio = parseFloat(t.getAttribute('data-paw-size')) || 1;
+        var fs = parseFloat(getComputedStyle(t).fontSize) || 0;
+        var size = fs * ratio;
+        var idx = t.getAttribute('data-paw-at').split(',');
+        idx.forEach(function (s) {
+          var i = parseInt(s, 10);
+          var a, b, rot;
+          try {
+            a = t.getStartPositionOfChar(i);
+            b = t.getEndPositionOfChar(i);
+            rot = t.getRotationOfChar(i);
+          } catch (e) { return; }
+          var u = document.createElementNS(SVGNS, 'use');
+          u.setAttribute('href', '#' + sym);
+          u.setAttribute('width', size);
+          u.setAttribute('height', size);
+          /* 基線の少し上に、文字と同じ大きさで置く */
+          u.setAttribute('x', -size / 2);
+          u.setAttribute('y', -fs * 0.36 - size / 2);
+          u.setAttribute('transform', 'translate(' + ((a.x + b.x) / 2).toFixed(2) + ',' +
+            ((a.y + b.y) / 2).toFixed(2) + ') rotate(' + rot.toFixed(2) + ')');
+          u.setAttribute('class', 'fv__arch-paw');
+          arch.appendChild(u);
+        });
+      });
+    }
+    placePaws();
+    /* Webフォントの読み込みで文字幅が変わるため、読み込み後にもう一度置き直す */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placePaws);
+    window.addEventListener('resize', placePaws);
+  }
+
   /* ---------- お問い合わせフォーム(飼い主さま / 法人・団体さま の2窓口) ----------
      送信先(CONTACT_FORM_ENDPOINT)が未設定のうちはフォームを出さず、
      お電話のご案内だけを表示する。 */
