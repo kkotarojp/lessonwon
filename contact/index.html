@@ -131,7 +131,7 @@
            https://formspree.io/f/xxxxxxxx を下の "" の中に貼ってください。
            貼るまではフォームは表示されず、お電話のご案内だけが出ます。 -->
       <script>
-        var CONTACT_FORM_ENDPOINT = "";
+        var CONTACT_FORM_ENDPOINT = "https://formspree.io/f/xoeabojo";
       </script>
       <!-- ▲▲▲ 編集はこの上のブロックだけでOK ▲▲▲ -->
 
@@ -188,7 +188,7 @@
               <textarea class="cform__input cform__textarea" id="cf-body" name="ご相談内容" rows="6" required placeholder="気になっていることを、どんな小さなことでもお書きください。"></textarea>
             </div>
             <label class="cform__agree">
-              <input type="checkbox" required>
+              <input type="checkbox" name="個人情報の取扱い" value="同意しました" required>
               <span><a href="../privacy/">プライバシーポリシー</a>に同意します</span>
             </label>
             <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="cform__gotcha">
@@ -244,7 +244,7 @@
               <textarea class="cform__input cform__textarea" id="cb-body" name="ご依頼の内容" rows="6" required placeholder="想定されている内容・規模・ご予算などをお知らせいただけますと、ご返答がスムーズです。"></textarea>
             </div>
             <label class="cform__agree">
-              <input type="checkbox" required>
+              <input type="checkbox" name="個人情報の取扱い" value="同意しました" required>
               <span><a href="../privacy/">プライバシーポリシー</a>に同意します</span>
             </label>
             <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="cform__gotcha">

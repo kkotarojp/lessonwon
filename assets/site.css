@@ -112,7 +112,7 @@ html.js .preloader.is-play .preloader__panel--a { animation: pre-panel 1s 1.05s 
   align-items: center; justify-items: center; overflow: hidden; padding: 72px 0 40px; }
 /* 背景: ロゴの後ろを流れる文字マーキー */
 .fv__bg { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); overflow: hidden; white-space: nowrap; user-select: none; pointer-events: none; }
-.fv__bgtrack { display: inline-block; font-family: var(--en); font-weight: 800; font-size: clamp(120px, 26vw, 340px); letter-spacing: -.03em; line-height: 1; color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 12%, transparent); animation: marquee 40s linear infinite; }
+.fv__bgtrack { display: inline-block; font-family: var(--en); font-weight: 800; font-size: clamp(120px, 26vw, 340px); letter-spacing: -.03em; line-height: 1; color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 12%, transparent); animation: marquee 78s linear infinite; }
 
 /* ロゴの上下を流れる写真バンド(装飾)。
    自動送りと指スワイプを両立させるため、site.js が transform で動かしている。
@@ -142,12 +142,14 @@ html.js .preloader.is-play .preloader__panel--a { animation: pre-panel 1s 1.05s 
 
 /* ---- FVサイン(旧バナーの文字組みをテキストで再現) ---- */
 :root { --sign-pink: #EC3899; --sign-navy: #1B3363; }
-.fv__sign { display: flex; align-items: center; justify-content: center; gap: clamp(6px, 1.8vw, 26px); }
+/* ロゴは1枚だけ。中央に置く(以前は右にトイプードルの写真を並べていた) */
+.fv__sign { display: flex; align-items: center; justify-content: center; }
 
 /* 弧に沿わせたロゴ。画像ではなく本物のテキスト(textPath)なので、
    検索エンジンにも読まれ、どの画面幅でもきれいに拡大縮小する。
    反りの強さを変えるには index.html の TOPS(弧の中央の高さ)を調整する。 */
-.fv__arch { width: clamp(200px, 58vw, 660px); height: auto; flex: none; overflow: visible; }
+/* 画面が縦に浅いときは vh 側で頭打ちにする。そうしないと上下の写真バンドに重なる */
+.fv__arch { width: clamp(240px, min(74vw, 92vh), 760px); height: auto; flex: none; overflow: visible; }
 .fv__arch text { font-family: "Zen Maru Gothic", var(--jp); font-weight: 900; }
 .fv__arch-t1 { font-size: 54px; letter-spacing: 4px; fill: var(--sign-navy); }
 .fv__arch-t2 { font-size: 120px; letter-spacing: 2px; fill: var(--sign-pink); }
@@ -161,14 +163,10 @@ html.js .preloader.is-play .preloader__panel--a { animation: pre-panel 1s 1.05s 
 .fv__lockup-sub { justify-content: flex-end; font-size: clamp(12px, 2.6vw, 28px); color: var(--sign-navy); letter-spacing: .07em; margin-top: .3em; gap: .1em; }
 .fv__paw-s { width: .95em; height: .95em; color: var(--sign-pink); flex: none; }
 .fv__paw-o { width: 1.2em; height: 1.13em; flex: none; margin: 0 .04em; }
-.fv__poodle { width: clamp(78px, 14vw, 158px); aspect-ratio: 1; object-fit: cover; flex: none;
-  -webkit-mask-image: radial-gradient(circle, #000 50%, transparent 70%);
-  mask-image: radial-gradient(circle, #000 50%, transparent 70%); }
 @media (max-width: 560px) {
   .fv__lockup-top { font-size: clamp(11px, 3.2vw, 15px); }
   .fv__lockup-main { font-size: clamp(26px, 7.8vw, 34px); }
   .fv__lockup-sub { font-size: clamp(10px, 3vw, 14px); }
-  .fv__poodle { width: clamp(58px, 16vw, 80px); }
 }
 .fv__badge { font-size: 12px; font-weight: 700; padding: 6px 15px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); }
 .fv__badge b { color: var(--terra-deep); }
