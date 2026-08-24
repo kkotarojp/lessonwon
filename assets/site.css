@@ -622,6 +622,9 @@ html.home .snap2 { scroll-snap-align: start; }
 .p-next--left { justify-content: flex-start; }
 .p-next__btn { font-size: 13px; font-weight: 700; letter-spacing: .06em; padding: 10px 20px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); transition: background .25s, color .25s, border-color .25s; }
 .p-next__btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+/* 注意書きの下に置く「よくあるご質問はこちら」の1行 */
+.p-notice__more { margin-top: 14px; font-weight: 700; }
+.p-notice__more a { color: var(--terra-deep); text-underline-offset: 4px; }
 .p-inline-btn { display: inline-flex; margin-top: 12px; }
 
 /* ---- Form ---- */
