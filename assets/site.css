@@ -141,6 +141,16 @@ html.js .preloader.is-play .preloader__panel--a { animation: pre-panel 1s 1.05s 
 .fv__mark { width: clamp(44px, 6vw, 64px); height: clamp(44px, 6vw, 64px); color: var(--terra); margin-inline: auto; }
 .fv__brand { font-family: var(--en); font-weight: 800; font-size: clamp(48px, 11vw, 140px); letter-spacing: -.04em; line-height: 1.05; margin-top: 10px; }
 .fv__brand em { font-style: normal; color: var(--terra); }
+/* ロゴ下の小さなお知らせ(文言は index.html の1行) */
+.fv__news { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; padding: 7px 8px 7px 7px;
+  border-radius: 999px; background: color-mix(in srgb, var(--terra) 10%, var(--paper));
+  border: 1px solid color-mix(in srgb, var(--terra) 30%, transparent); color: var(--ink); text-decoration: none;
+  font-size: 12.5px; line-height: 1.4; max-width: min(92vw, 560px); }
+.fv__news:hover { background: color-mix(in srgb, var(--terra) 16%, var(--paper)); }
+.fv__news-tag { flex: none; font-size: 10.5px; font-weight: 700; letter-spacing: .08em; padding: 3px 9px; border-radius: 999px; background: var(--terra); color: #fff; }
+.fv__news-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fv__news-arrow { flex: none; color: var(--terra-deep); font-weight: 800; }
+@media (max-width: 430px) { .fv__news { font-size: 11.5px; margin-top: 14px; } }
 .fv__title { font-size: clamp(12px, 1.5vw, 15px); font-weight: 700; letter-spacing: .22em; margin-top: 26px; color: var(--ink-2); }
 /* 語の途中(レッスン/WON など)で折り返さないためのユーティリティ */
 .nb { white-space: nowrap; }
@@ -157,7 +167,7 @@ html.js .preloader.is-play .preloader__panel--a { animation: pre-panel 1s 1.05s 
    検索エンジンにも読まれ、どの画面幅でもきれいに拡大縮小する。
    反りの強さを変えるには index.html の TOPS(弧の中央の高さ)を調整する。 */
 /* 画面が縦に浅いときは vh 側で頭打ちにする。そうしないと上下の写真バンドに重なる */
-.fv__arch { width: clamp(240px, min(74vw, 92vh), 760px); height: auto; flex: none; overflow: visible; }
+.fv__arch { width: clamp(240px, min(74vw, 84vh), 760px); height: auto; flex: none; overflow: visible; }
 .fv__arch text { font-family: "Zen Maru Gothic", var(--jp); font-weight: 900; }
 .fv__arch-t1 { font-size: 54px; letter-spacing: 4px; fill: var(--sign-navy); }
 .fv__arch-t2 { font-size: 120px; letter-spacing: 2px; fill: var(--sign-pink); }
@@ -334,6 +344,18 @@ html.js .reveal--d3 { transition-delay: .24s; }
 .trainer--noimg { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: start; }
 .trainer--noimg .trainer__msg:first-child { margin-top: 0; }
 @media (max-width: 1023px) { .trainer--noimg { grid-template-columns: 1fr; gap: 24px; } }
+
+/* ---- お知らせ一覧(/news/) ---- */
+
+.news { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.news__item { display: grid; grid-template-columns: 148px 1fr; gap: 8px 24px;
+  padding: 22px 4px; border-bottom: 1px solid var(--line); }
+.news__date { font-size: 13px; font-weight: 700; color: var(--ink-2); letter-spacing: .04em; padding-top: 2px; }
+.news__body { margin: 0; line-height: 1.9; }
+.news__body a { color: var(--terra-deep); text-underline-offset: 4px; }
+@media (max-width: 640px) {
+  .news__item { grid-template-columns: 1fr; gap: 4px; padding: 18px 2px; }
+}
 
 /* ---- Photo band ---- */
 .band { position: relative; }
