@@ -345,7 +345,20 @@ html.js .reveal--d3 { transition-delay: .24s; }
 .trainer--noimg .trainer__msg:first-child { margin-top: 0; }
 @media (max-width: 1023px) { .trainer--noimg { grid-template-columns: 1fr; gap: 24px; } }
 
-/* ---- お知らせ一覧(/news/) ---- */
+/* ---- お知らせ一覧(/news/) ----
+   4件以上になったら3件ぶんの高さで止めて中をスクロールさせる。
+   高さは site.js が3件目の位置を測って入れる(JSが動かないときは全件表示)。 */
+.news-scroll { position: relative; }
+.news-scroll.is-capped { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--terra) 45%, transparent) transparent;
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 46px), transparent 100%);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 46px), transparent 100%); }
+.news-scroll.is-capped.is-end { -webkit-mask-image: none; mask-image: none; }
+.news-scroll.is-capped::-webkit-scrollbar { width: 6px; }
+.news-scroll.is-capped::-webkit-scrollbar-thumb { border-radius: 999px; background: color-mix(in srgb, var(--terra) 45%, transparent); }
+.news-scroll__hint { margin-top: 12px; font-size: 12px; color: var(--ink-2); display: none; }
+.news-scroll.is-capped + .news-scroll__hint { display: block; }
+
 
 .news { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .news__item { display: grid; grid-template-columns: 148px 1fr; gap: 8px 24px;
@@ -370,6 +383,10 @@ html.js .reveal--d3 { transition-delay: .24s; }
 .access__val { color: var(--ink-2); }
 .access__val b { color: var(--ink); font-weight: 700; }
 .access__actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+/* 看板の写真(縦長)。右カラムの幅いっぱいに、角丸で */
+.access__ph { margin-bottom: 20px; }
+.access__ph img { display: block; width: 100%; max-width: 420px; height: auto; border-radius: var(--r); box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+.access__cap { margin-top: 10px; font-size: 13px; color: var(--ink-2); }
 .access__note { background: var(--paper); border-radius: 18px; padding: 26px 28px; font-size: 13.5px; color: var(--ink-2); }
 .sec--paper .access__note, .p-sec--paper .access__note { background: var(--bg); }
 .access__note strong { display: block; color: var(--ink); font-size: 14.5px; margin-bottom: 8px; letter-spacing: .06em; }

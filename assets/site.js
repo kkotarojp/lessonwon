@@ -292,4 +292,48 @@
     band.addEventListener('pointerleave', endDrag);
   });
 
+  /* ---------- お知らせ ----------
+     ・/news/ は4件以上のとき3件ぶんの高さで止めて中をスクロール
+     ・トップのロゴ下の1行は /news/ の最新1件から自分で埋める(編集箇所を1つにするため) */
+  var newsBox = document.getElementById('newsScroll');
+  if (newsBox) {
+    var items = newsBox.querySelectorAll('.news__item');
+    if (items.length > 3) {
+      var cap = function () {
+        newsBox.style.maxHeight = '';
+        newsBox.classList.remove('is-capped');
+        var top = newsBox.getBoundingClientRect().top;
+        var h = Math.round(items[2].getBoundingClientRect().bottom - top);
+        newsBox.style.maxHeight = h + 'px';
+        newsBox.classList.add('is-capped');
+      };
+      var markEnd = function () {
+        var end = newsBox.scrollTop + newsBox.clientHeight >= newsBox.scrollHeight - 2;
+        newsBox.classList.toggle('is-end', end);
+      };
+      var capAll = function () { cap(); markEnd(); };
+      capAll();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(capAll);
+      window.addEventListener('resize', capAll);
+      newsBox.addEventListener('scroll', markEnd);
+    }
+  }
+
+  var pill = document.querySelector('.fv__news');
+  if (pill && !newsBox) {
+    /* トップページ: /news/ の一番上の1件を読んで文言を差し替える。
+       取れなければHTMLに書いてある文言のまま(壊れない) */
+    fetch(pill.getAttribute('href'), { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.text() : null; })
+      .then(function (html) {
+        if (!html) return;
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var first = doc.querySelector('.news__item .news__body');
+        if (!first) { pill.hidden = true; return; }
+        var txt = pill.querySelector('.fv__news-text');
+        if (txt) txt.textContent = first.textContent.trim().split('。')[0] + '。';
+      })
+      .catch(function () {});
+  }
+
 })();
