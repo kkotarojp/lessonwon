@@ -1159,15 +1159,11 @@ html.home { scroll-snap-type: none !important; }
 /* ============================================================
    さらに引き算 (2026-10-17)  「レベルの高い簡易」= 要素を減らして、残ったものを大きく
    ============================================================ */
-/* FV: 背景を流れる巨大文字、上の写真バンド、SCROLL表示をやめる。写真は下に1列だけ */
-.fv__bg, .fv__bgtrack { display: none; }
-.fv__band--top { display: none; }
-.fv { grid-template-rows: auto auto; }
-.fv__in { padding-top: clamp(96px, 14vh, 150px); }
-.fv__scroll { display: none; }
-.fv__bandtrack { opacity: 1; }
-.fv__band--bottom { margin-top: clamp(24px, 4vh, 44px); }
-@media (max-width: 767px) { .fv { grid-template-rows: auto auto; padding-top: 0; } .fv__in { padding-top: 92px; } }
+/* FV: 流れる文字・流れる写真バンド・SCROLL表示は全部やめた(2026-10-25)。ロゴと見出しとボタンだけを画面の中央に */
+.fv__bg, .fv__bgtrack, .fv__band, .fv__scroll { display: none; }
+.fv { grid-template-rows: 1fr; }
+.fv__in { padding-top: 0; }
+@media (max-width: 767px) { .fv { grid-template-rows: 1fr; padding-top: 72px; } .fv__in { padding-top: 0; } }
 
 /* 下層のヒーロー: 白抜きの巨大英字をやめる。パンくず・見出し・本文・写真だけ */
 .phero__en { display: none; }
