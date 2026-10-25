@@ -1361,8 +1361,8 @@ p, li, dd, td, .p-lead, .svc__text { text-wrap: pretty; }
 .fv__bg { display: block; }
 .fv__bgtrack { display: inline-block; opacity: 1; animation: marquee 40s linear infinite; }
 .fv__band, .fv__band--top, .fv__band--bottom { display: block; margin-top: 0; height: auto; min-height: 0; pointer-events: none; cursor: default; }
-.fv__bandtrack { opacity: .88; animation: marquee 80s linear infinite; }
-.fv__band--bottom .fv__bandtrack { animation-duration: 96s; animation-direction: reverse; }
+.fv__bandtrack { opacity: .88; animation: marquee 70s linear infinite; }
+.fv__band--bottom .fv__bandtrack { animation-duration: 70s; animation-direction: reverse; }   /* 上下同じ速さ */
 .fv__in { padding-top: 0; padding-block: 0; }
 .fv__sign { gap: clamp(6px, 1.8vw, 26px); }
 .fv__poodle { width: clamp(78px, 14vw, 158px); aspect-ratio: 1; object-fit: cover; flex: none;
