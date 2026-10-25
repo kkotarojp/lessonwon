@@ -848,6 +848,7 @@ html.home .snap2 { scroll-snap-align: start; }
 .mm--school { --mc: #FBEFD2; --mi: #C08A2D; }
 .mm--price { --mc: #E6E3EE; --mi: #5C5A8E; }
 .mm--access { --mc: #DCEEE9; --mi: #3E8E7C; }
+.mm--daycare { --mc: #E2E8F5; --mi: #4F6CA6; }
 
 /* 見ているページは塗りつぶして、肉球を白く抜く */
 .mm[aria-current="page"] { background: var(--mc); }
@@ -1193,7 +1194,7 @@ body.is-locked .guide { opacity: 0; pointer-events: none; }
 .guide__img { width: 92px; height: 92px; flex: none; transform-origin: 50% 100%; }
 .guide.is-hop .guide__img { animation: guide-hop .55s var(--ease); }
 @keyframes guide-hop { 0% { transform: translateY(0); } 35% { transform: translateY(-9px) rotate(-3deg); } 100% { transform: translateY(0); } }
-.guide__bubble { position: relative; max-width: 260px; margin-bottom: 26px; padding: 12px 36px 12px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+.guide__bubble { position: relative; max-width: none; white-space: nowrap; margin-bottom: 26px; padding: 12px 36px 12px 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
   font-size: 13.5px; line-height: 1.7; color: var(--ink); box-shadow: 0 6px 24px rgba(36, 28, 31, .08); }
 .guide__bubble::before { content: ""; position: absolute; left: -7px; bottom: 16px; width: 12px; height: 12px; background: var(--paper); border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); transform: rotate(45deg); }
 .guide__name { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--sakura, #DB7A93); margin-bottom: 2px; }
