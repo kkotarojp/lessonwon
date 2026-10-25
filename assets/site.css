@@ -58,6 +58,7 @@ html.js .preloader.is-play .preloader__word { animation: pre-word 1.4s var(--eas
 html.js .preloader.is-play .preloader__panel--b { animation: pre-panel 1s .9s var(--ease) forwards; }
 html.js .preloader.is-play .preloader__panel--a { animation: pre-panel 1s 1.05s var(--ease) forwards; }
 .preloader.is-done, html:not(.js) .preloader { display: none; }
+.preloader { display: none; }   /* 2026-10-25: 開幕の幕(プリローダー)はやめた。HTMLからも外してある */
 @keyframes pre-word { 0% { opacity: 0; transform: translateY(24px); } 30%, 70% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-16px); } }
 @keyframes pre-panel { to { transform: scaleY(0); } }
 
