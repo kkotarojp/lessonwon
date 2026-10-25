@@ -1328,3 +1328,27 @@ body { font-weight: 500; font-size: 16px; }
   .p-note { font-size: 14px; }
   .p-table th, .p-table td { font-size: 15.5px; }
 }
+
+/* ============================================================
+   スマホの読みやすさ (2026-10-25)  変なところで折り返さない・1語の孤立を防ぐ
+   ============================================================ */
+.p-table th, .p-step__title, .svc__title { text-wrap: balance; }   /* 日本語の見出しは balance だと語の途中で切れるので、見出しは .nb の区切りで制御 */
+p, li, dd, td, .p-lead, .svc__text { text-wrap: pretty; }
+.nb { white-space: nowrap; }
+.btn, .p-next__btn, .more a { white-space: normal; text-align: center; line-height: 1.45; }
+.fv__trust span + span::before { content: "／"; margin: 0 .6em; color: var(--ink-2); }
+.pq + .pq::before { content: " / "; }
+@media (max-width: 767px) {
+  .fv__trust span { display: block; }
+  .fv__trust span + span::before { content: none; margin: 0; }
+  .p-split__price small, .p-table__sub { display: block; margin: 4px 0 0; }
+  .pq { display: block; } .pq + .pq::before { content: none; }
+  .p-table th { font-size: 14px; padding-right: 8px; }
+  .btn { padding-inline: 18px; }
+}
+@media (max-width: 767px) {
+  /* アクセスの店舗情報: スマホでは「項目名」を上、「内容」を下に積む(左右2列だと左の空きが目立つ) */
+  .access__row { display: block; }
+  .access__key { display: block; font-size: 12px; color: var(--ink-2); margin-bottom: 2px; }
+  .access__val { display: block; }
+}
