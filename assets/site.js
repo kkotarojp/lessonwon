@@ -78,7 +78,8 @@
   if (menuBtn) menuBtn.addEventListener('click', function () { setMenu(!mmenu.classList.contains('is-open')); });
   if (mmenu) {
     mmenu.addEventListener('click', function (e) {
-      if (e.target.closest('a') || e.target.closest('[data-menu-close]')) setMenu(false);
+      /* リンク・とじるボタン・パネルの外側(背景)のどれを押しても閉じる */
+      if (e.target.closest('a') || e.target.closest('[data-menu-close]') || !e.target.closest('.mmenu__panel')) setMenu(false);
     });
   }
   document.addEventListener('keydown', function (e) {
@@ -336,4 +337,90 @@
       .catch(function () {});
   }
 
+})();
+
+
+/* ---------- 案内役: スクロールで今の場所に合わせて一言 ----------
+   見出し(h2)の文言から、言うことを決める。マークアップは触らず、JSが組み立てる。
+   PC(1024px〜)だけ。閉じたらセッション中は出さない。 */
+(function wonGuide() {
+  var mqG = window.matchMedia('(min-width: 1024px)');
+  if (!mqG.matches) { mqG.addEventListener && mqG.addEventListener('change', function (e) { if (e.matches) location.reload(); }, { once: true }); return; }
+  try { if (sessionStorage.getItem('won_guide_off') === '1') return; } catch (e) {}
+  var heads = Array.prototype.slice.call(document.querySelectorAll('main h2'));
+  if (heads.length < 2) return;
+
+  /* 看板犬の桃太郎のセリフ。上からにならないよう「ぼく」の目線で、やわらかく */
+  var LINES = [
+    ['サービスのご案内', 'まずは、この3つから選んでね🐾'],
+    ['静かな家', 'はじめての子は、ここを読んでみてね🏠'],
+    ['お客様の声', '実際に来てくれた子の、おうちの人の声だよ💬'],
+    ['ご利用の流れ', 'やることは3つだけ。かんたんだよ✨'],
+    ['料金', '料金は、ぜんぶここに書いてあるよ💰'],
+    ['特徴', 'ぼくのおうちのいいところ、見てね🐶'],
+    ['お悩み', '当てはまるものがあったら、気軽に相談してね😊'],
+    ['こんなとき', 'こんなときに、使ってもらえるよ🙌'],
+    ['お預かりについて', 'まずは「仮お泊まり」からで大丈夫だよ🌙'],
+    ['一時預かり', '数時間だけでも、OKだよ⏰'],
+    ['キャンセル', 'ここも、ちょっとだけ見ておいてね🙏'],
+    ['よくあるご質問', '気になることは、ここに答えがあるかも💡'],
+    ['コース', 'ちがいは、ここで分かるよ👀'],
+    ['社会化', '幼稚園に通う理由は、これなんだ🎒'],
+    ['対応エリア', '来てもらえる範囲は、ここだよ🚗'],
+    ['プロフィール', 'ぼくの先生を、紹介するね🎓']
+  ];
+  function lineFor(h) {
+    var t = h.textContent;
+    for (var i = 0; i < LINES.length; i++) if (t.indexOf(LINES[i][0]) !== -1) return LINES[i][1];
+    return '';
+  }
+  var targets = heads.map(function (h) { return { el: h.closest('section') || h, line: lineFor(h) }; })
+                     .filter(function (t) { return t.line; });
+  if (targets.length < 2) return;
+
+  var base = document.querySelector('.brand') ? (document.querySelector('.brand').getAttribute('href') || './') : './';
+  base = base.replace(/index\.html$/, '');
+  var box = document.createElement('div');
+  box.className = 'guide';
+  box.innerHTML = '<img class="guide__img" src="' + base + 'assets/img/mascot/momotaro-point-256.webp" alt="" width="92" height="92">' +
+                  '<div class="guide__bubble"><b class="guide__name">看板犬の桃太郎</b><span class="guide__text"></span><button class="guide__close" type="button" aria-label="案内を閉じる">×</button></div>';
+  document.body.appendChild(box);
+  var text = box.querySelector('.guide__text');
+  var current = null, shown = false, timer = null;
+
+  function say(t) {
+    if (t === current) return;
+    current = t;
+    if (timer) clearTimeout(timer);
+    box.classList.add('is-swap');
+    timer = setTimeout(function () {
+      text.textContent = t;
+      box.classList.remove('is-swap');
+      box.classList.remove('is-hop'); void box.offsetWidth; box.classList.add('is-hop');
+      timer = null;
+    }, 220);
+    if (!shown) { shown = true; box.classList.add('is-on'); }
+  }
+  /* 「読んでいる場所」= 画面の上から45%の線を最後に通過したセクション。
+     まだどのセクションも線に届いていなければ(FVの間は)出さない */
+  function pick() {
+    var line = window.innerHeight * 0.45, best = null;
+    for (var i = 0; i < targets.length; i++) {
+      var r = targets[i].el.getBoundingClientRect();
+      if (r.top <= line && r.bottom > 80) best = targets[i];
+    }
+    if (best) say(best.line);
+    else if (shown) { box.classList.remove('is-on'); shown = false; current = null; }
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(function () { pick(); ticking = false; });
+  }, { passive: true });
+  box.querySelector('.guide__close').addEventListener('click', function () {
+    box.classList.remove('is-on');
+    try { sessionStorage.setItem('won_guide_off', '1'); } catch (e) {}
+    setTimeout(function () { box.remove(); }, 500);
+  });
+  pick();
 })();
