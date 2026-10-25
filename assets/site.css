@@ -1352,3 +1352,26 @@ p, li, dd, td, .p-lead, .svc__text { text-wrap: pretty; }
   .access__key { display: block; font-size: 12px; color: var(--ink-2); margin-bottom: 2px; }
   .access__val { display: block; }
 }
+
+/* ============================================================
+   トップ一番上の復元 (2026-10-25)  今日より前に本番で使っていた形に戻す:
+   流れる「LESSON WON」の文字、上下2列の写真の帯、ロゴ横のプードル写真、SCROLL表示。開幕の幕(プリローダー)だけは無し
+   ============================================================ */
+.fv { height: 100svh; min-height: 540px; grid-template-rows: 1fr auto 1fr; padding: 72px 0 40px; }
+.fv__bg { display: block; }
+.fv__bgtrack { display: inline-block; opacity: 1; animation: marquee 40s linear infinite; }
+.fv__band, .fv__band--top, .fv__band--bottom { display: block; margin-top: 0; height: auto; min-height: 0; pointer-events: none; cursor: default; }
+.fv__bandtrack { opacity: .88; animation: marquee 80s linear infinite; }
+.fv__band--bottom .fv__bandtrack { animation-duration: 96s; animation-direction: reverse; }
+.fv__in { padding-top: 0; padding-block: 0; }
+.fv__sign { gap: clamp(6px, 1.8vw, 26px); }
+.fv__poodle { width: clamp(78px, 14vw, 158px); aspect-ratio: 1; object-fit: cover; flex: none;
+  -webkit-mask-image: radial-gradient(circle, #000 50%, transparent 70%); mask-image: radial-gradient(circle, #000 50%, transparent 70%); }
+@media (min-width: 768px) { .fv__scroll { display: inline-flex; } }
+@media (max-width: 767px) {
+  .fv { height: 100svh; min-height: 540px; grid-template-rows: 1fr auto 1fr; padding: 72px 0 40px; }
+  .fv__band { height: auto; min-height: 0; }
+  .fv__in { padding-block: 0; }
+}
+@media (max-width: 560px) { .fv__poodle { width: clamp(58px, 16vw, 80px); } }
+@media (prefers-reduced-motion: reduce) { .fv__bgtrack, .fv__bandtrack { animation: none; } }

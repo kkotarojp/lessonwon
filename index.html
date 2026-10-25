@@ -103,56 +103,63 @@
 
   <!-- FV(1画面完結) -->
   <section class="fv">
+    <!-- 背景: ロゴの後ろを流れる文字マーキー -->
+    <div class="fv__bg" aria-hidden="true">
+      <span class="fv__bgtrack">LESSON&nbsp;WON&nbsp;&nbsp;LESSON&nbsp;WON&nbsp;&nbsp;LESSON&nbsp;WON&nbsp;&nbsp;LESSON&nbsp;WON&nbsp;&nbsp;LESSON&nbsp;WON&nbsp;&nbsp;LESSON&nbsp;WON&nbsp;&nbsp;</span>
+    </div>
+    <!-- 写真バンド(装飾): ロゴの上下。同じ8枚を2周分ならべて途切れなく流す -->
+    <div class="fv__band fv__band--top" aria-hidden="true">
+      <div class="fv__bandtrack">
+        <img src="assets/img/band/03-pet-hotel-home-like-room.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/05-individual-training-black-dog.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/07-dog-kindergarten-socialization.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/09-large-dog-hotel-room.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/04-pet-hotel-evening-care.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/10-kindergarten-guided-lesson.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/08-group-training-class.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/15-first-consultation-handoff.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/03-pet-hotel-home-like-room.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/05-individual-training-black-dog.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/07-dog-kindergarten-socialization.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/09-large-dog-hotel-room.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/04-pet-hotel-evening-care.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/10-kindergarten-guided-lesson.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/08-group-training-class.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/15-first-consultation-handoff.jpg" alt="" width="420" height="315" decoding="async">
+      </div>
+    </div>
     <div class="fv__in">
       <div class="fv__sign">
-        <svg class="fv__arch" id="fvArch" viewBox="0 0 1000 412" role="img" aria-label="わんちゃんのしつけホテル レッスンWON 大切な家族だから">
-          <defs>
-      <path id="ar1" d="M60.0 139.99 A2174 2174 0 0 1 940.0 139.99"/>
-      <path id="ar2" d="M60.0 298.53 A2019 2019 0 0 1 940.0 298.53"/>
-      <path id="ar3" d="M60.0 395.99 A1924 1924 0 0 1 940.0 395.99"/>
-            <symbol id="pawS" viewBox="0 0 48 48"><ellipse cx="20" cy="14.5" rx="4.9" ry="6.6" transform="rotate(-7 20 14.5)"/><ellipse cx="29" cy="14.5" rx="4.9" ry="6.6" transform="rotate(7 29 14.5)"/><ellipse cx="12.5" cy="21.5" rx="4.7" ry="6.2" transform="rotate(-22 12.5 21.5)"/><ellipse cx="36.5" cy="21.5" rx="4.7" ry="6.2" transform="rotate(22 36.5 21.5)"/><path d="M24.5 24c-7.4 0-13.4 4.9-13.4 10.4 0 4.2 3.3 6.6 7.1 6.6 2.2 0 3.9-.9 6.3-.9s4.1.9 6.3.9c3.8 0 7.1-2.4 7.1-6.6C37.9 28.9 31.9 24 24.5 24z"/></symbol>
-            <symbol id="pawO" viewBox="0 0 106 100"><circle cx="15" cy="30" r="9.5"/><circle cx="42" cy="15" r="12"/><circle cx="71" cy="21" r="11.5"/><circle cx="92" cy="45" r="9.5"/><circle cx="46" cy="70" r="21" fill="none" stroke="currentColor" stroke-width="15"/></symbol>
-          </defs>
-          <text class="fv__arch-t1" data-paw="pawS" data-paw-at="9" data-paw-size=".95">
-            <textPath href="#ar1" startOffset="50%" text-anchor="middle">わんちゃんのしつけ　ホテル</textPath>
-          </text>
-          <text class="fv__arch-t2" data-paw="pawO" data-paw-at="5" data-paw-size="1.06">
-            <textPath href="#ar2" startOffset="50%" text-anchor="middle">レッスンW　N</textPath>
-          </text>
-          <text class="fv__arch-t3" data-paw="pawS" data-paw-at="8,9,10" data-paw-size=".88">
-            <textPath href="#ar3" startOffset="50%" text-anchor="middle">大切な家族だから　　　</textPath>
-          </text>
-        </svg>
+        <div class="fv__lockup">
+          <p class="fv__lockup-top">わんちゃんのしつけ<svg class="fv__paw-s" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true"><ellipse cx="20" cy="14.5" rx="4.9" ry="6.6" transform="rotate(-7 20 14.5)"/><ellipse cx="29" cy="14.5" rx="4.9" ry="6.6" transform="rotate(7 29 14.5)"/><ellipse cx="12.5" cy="21.5" rx="4.7" ry="6.2" transform="rotate(-22 12.5 21.5)"/><ellipse cx="36.5" cy="21.5" rx="4.7" ry="6.2" transform="rotate(22 36.5 21.5)"/><path d="M24.5 24c-7.4 0-13.4 4.9-13.4 10.4 0 4.2 3.3 6.6 7.1 6.6 2.2 0 3.9-.9 6.3-.9s4.1.9 6.3.9c3.8 0 7.1-2.4 7.1-6.6C37.9 28.9 31.9 24 24.5 24z"/></svg>ホテル</p>
+          <p class="fv__lockup-main">レッスンW<svg class="fv__paw-o" viewBox="0 0 106 100" aria-hidden="true"><circle cx="15" cy="30" r="9.5" fill="#EC3899"/><circle cx="42" cy="15" r="12" fill="#EC3899"/><circle cx="71" cy="21" r="11.5" fill="#EC3899"/><circle cx="92" cy="45" r="9.5" fill="#EC3899"/><circle cx="46" cy="70" r="21" fill="none" stroke="#EC3899" stroke-width="15"/></svg>N</p>
+          <p class="fv__lockup-sub">大切な家族だから<svg class="fv__paw-s" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true"><ellipse cx="20" cy="14.5" rx="4.9" ry="6.6" transform="rotate(-7 20 14.5)"/><ellipse cx="29" cy="14.5" rx="4.9" ry="6.6" transform="rotate(7 29 14.5)"/><ellipse cx="12.5" cy="21.5" rx="4.7" ry="6.2" transform="rotate(-22 12.5 21.5)"/><ellipse cx="36.5" cy="21.5" rx="4.7" ry="6.2" transform="rotate(22 36.5 21.5)"/><path d="M24.5 24c-7.4 0-13.4 4.9-13.4 10.4 0 4.2 3.3 6.6 7.1 6.6 2.2 0 3.9-.9 6.3-.9s4.1.9 6.3.9c3.8 0 7.1-2.4 7.1-6.6C37.9 28.9 31.9 24 24.5 24z"/></svg><svg class="fv__paw-s" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true"><ellipse cx="20" cy="14.5" rx="4.9" ry="6.6" transform="rotate(-7 20 14.5)"/><ellipse cx="29" cy="14.5" rx="4.9" ry="6.6" transform="rotate(7 29 14.5)"/><ellipse cx="12.5" cy="21.5" rx="4.7" ry="6.2" transform="rotate(-22 12.5 21.5)"/><ellipse cx="36.5" cy="21.5" rx="4.7" ry="6.2" transform="rotate(22 36.5 21.5)"/><path d="M24.5 24c-7.4 0-13.4 4.9-13.4 10.4 0 4.2 3.3 6.6 7.1 6.6 2.2 0 3.9-.9 6.3-.9s4.1.9 6.3.9c3.8 0 7.1-2.4 7.1-6.6C37.9 28.9 31.9 24 24.5 24z"/></svg><svg class="fv__paw-s" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true"><ellipse cx="20" cy="14.5" rx="4.9" ry="6.6" transform="rotate(-7 20 14.5)"/><ellipse cx="29" cy="14.5" rx="4.9" ry="6.6" transform="rotate(7 29 14.5)"/><ellipse cx="12.5" cy="21.5" rx="4.7" ry="6.2" transform="rotate(-22 12.5 21.5)"/><ellipse cx="36.5" cy="21.5" rx="4.7" ry="6.2" transform="rotate(22 36.5 21.5)"/><path d="M24.5 24c-7.4 0-13.4 4.9-13.4 10.4 0 4.2 3.3 6.6 7.1 6.6 2.2 0 3.9-.9 6.3-.9s4.1.9 6.3.9c3.8 0 7.1-2.4 7.1-6.6C37.9 28.9 31.9 24 24.5 24z"/></svg></p>
+        </div>
+        <img class="fv__poodle" src="assets/img/fv-poodle.jpg" alt="トイプードルのイメージ" width="380" height="380" fetchpriority="high" decoding="async">
       </div>
       <h1 class="fv__title"><span class="nb">京都府宇治市のペットホテル・犬のしつけ</span> <span class="nb">レッスンWON</span></h1>
-      <p class="fv__lead2">宇治市にある訓練士の自宅で、<br class="sp">少ない頭数だけお預かりしています。</p>
-      <p class="fv__trust"><span>夜も人がいます</span><span>頭数を限定しています</span><span>初めての子は「仮お泊まり」から</span></p>
-      <div class="fv__cta">
-        <a class="btn btn--fill" href="tel:0774223005">電話で相談する</a>
-        <a class="btn btn--line" href="price/">料金を見る</a>
-      </div>
-      <p class="fv__ease">「うちの子でも預けられますか」<br class="sp">というご相談からどうぞ。</p>
     </div>
     <div class="fv__band fv__band--bottom" aria-hidden="true">
       <div class="fv__bandtrack">
-        <img src="assets/img/real/band/yard-wide.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/room-sunlight.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/yard-play.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/hotel-free.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/hotel-room.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/yard-ball.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/yard-poodle.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/room-white-dog.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/yard-wide.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/room-sunlight.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/yard-play.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/hotel-free.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/hotel-room.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/yard-ball.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/yard-poodle.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
-        <img src="assets/img/real/band/room-white-dog.jpg" alt="" width="420" height="315" decoding="async" loading="lazy">
+        <img src="assets/img/band/08-group-training-class.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/04-pet-hotel-evening-care.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/15-first-consultation-handoff.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/07-dog-kindergarten-socialization.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/03-pet-hotel-home-like-room.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/10-kindergarten-guided-lesson.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/05-individual-training-black-dog.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/09-large-dog-hotel-room.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/08-group-training-class.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/04-pet-hotel-evening-care.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/15-first-consultation-handoff.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/07-dog-kindergarten-socialization.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/03-pet-hotel-home-like-room.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/10-kindergarten-guided-lesson.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/05-individual-training-black-dog.jpg" alt="" width="420" height="315" decoding="async">
+        <img src="assets/img/band/09-large-dog-hotel-room.jpg" alt="" width="420" height="315" decoding="async">
       </div>
     </div>
+    <p class="fv__scroll en" aria-hidden="true">SCROLL</p>
   </section>
 
   <!-- サービス -->
