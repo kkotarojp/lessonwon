@@ -1161,18 +1161,15 @@ html.home { scroll-snap-type: none !important; }
 /* ============================================================
    さらに引き算 (2026-10-17)  「レベルの高い簡易」= 要素を減らして、残ったものを大きく
    ============================================================ */
-/* FV(2026-10-25): 流れる文字とSCROLL表示はやめる。写真は下に1列だけ、写真らしく(白いフチ・影・少し傾き)ゆっくり流す */
-.fv__bg, .fv__bgtrack, .fv__scroll { display: none; }
-.fv { grid-template-rows: 1fr auto; padding-bottom: clamp(18px, 3vh, 34px); }
-.fv__in { padding-top: 0; align-self: center; }
-.fv__band--bottom { margin-top: clamp(16px, 3vh, 36px); padding: 14px 0 18px; }
-.fv__bandtrack { opacity: 1; align-items: center; }
-.fv__bandtrack img { height: clamp(104px, 19vh, 184px); margin-right: clamp(14px, 1.6vw, 24px); border-radius: 10px;
-  padding: 6px 6px 7px; background: var(--paper); box-shadow: 0 8px 22px rgba(36, 28, 31, .10), 0 1px 0 rgba(36, 28, 31, .04); }
-.fv__bandtrack img:nth-child(odd) { transform: rotate(-1.6deg); }
-.fv__bandtrack img:nth-child(even) { transform: rotate(1.4deg) translateY(4px); }
-.fv__bandtrack img:nth-child(3n) { transform: rotate(.6deg) translateY(-3px); }
-@media (max-width: 767px) { .fv { grid-template-rows: 1fr auto; padding-top: 72px; padding-bottom: 118px; /* 下部バーに隠れない分 */ } .fv__in { padding-top: 0; } .fv__bandtrack img { height: 112px; } }
+/* FV: 背景を流れる巨大文字、上の写真バンド、SCROLL表示をやめる。写真は下に1列だけ(2026-10-17の形。10-25に一度変えたが元に戻した) */
+.fv__bg, .fv__bgtrack { display: none; }
+.fv__band--top { display: none; }
+.fv { grid-template-rows: auto auto; }
+.fv__in { padding-top: clamp(96px, 14vh, 150px); }
+.fv__scroll { display: none; }
+.fv__bandtrack { opacity: 1; }
+.fv__band--bottom { margin-top: clamp(24px, 4vh, 44px); }
+@media (max-width: 767px) { .fv { grid-template-rows: auto auto; padding-top: 0; } .fv__in { padding-top: 92px; } }
 
 /* 下層のヒーロー: 白抜きの巨大英字をやめる。パンくず・見出し・本文・写真だけ */
 .phero__en { display: none; }
