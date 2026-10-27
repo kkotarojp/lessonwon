@@ -1366,7 +1366,6 @@ p, li, dd, td, .p-lead, .svc__text { text-wrap: pretty; }
 .fv__sign { gap: clamp(6px, 1.8vw, 26px); }
 .fv__poodle { width: clamp(78px, 14vw, 158px); aspect-ratio: 1; object-fit: cover; flex: none;
   -webkit-mask-image: radial-gradient(circle, #000 50%, transparent 70%); mask-image: radial-gradient(circle, #000 50%, transparent 70%); }
-@media (min-width: 768px) { .fv__scroll { display: inline-flex; } }
 @media (max-width: 767px) {
   .fv { height: 100svh; min-height: 540px; grid-template-rows: 1fr auto 1fr; padding: 72px 0 40px; }
   .fv__band { height: auto; min-height: 0; }
