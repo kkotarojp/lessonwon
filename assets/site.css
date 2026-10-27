@@ -1374,3 +1374,6 @@ p, li, dd, td, .p-lead, .svc__text { text-wrap: pretty; }
 }
 @media (max-width: 560px) { .fv__poodle { width: clamp(58px, 16vw, 80px); } }
 @media (prefers-reduced-motion: reduce) { .fv__bgtrack, .fv__bandtrack { animation: none; } }
+
+/* ヘッダー(2026-10-27): PCはメニューが全部ヘッダーに並ぶので MENU ボタンは出さない。スマホはMENUだけ */
+@media (min-width: 1100px) { .menu-btn { display: none; } }   /* .hnav が出るのは 1100px〜 */
