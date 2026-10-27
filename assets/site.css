@@ -1377,3 +1377,5 @@ p, li, dd, td, .p-lead, .svc__text { text-wrap: pretty; }
 
 /* ヘッダー(2026-10-27): PCはメニューが全部ヘッダーに並ぶので MENU ボタンは出さない。スマホはMENUだけ */
 @media (min-width: 1100px) { .menu-btn { display: none; } }   /* .hnav が出るのは 1100px〜 */
+/* ページ間の幕はやめた(2026-10-27) */
+.wipe { display: none; }

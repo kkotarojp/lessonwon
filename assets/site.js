@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var wipe = document.getElementById('wipe');
+  var wipe = null;   /* 2026-10-27: ページ間の幕(ワイプ)はやめた。リンクは普通に即移動する。#wipe の要素は残っているが使わない */
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- 入場演出 ----------
