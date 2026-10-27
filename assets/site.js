@@ -240,7 +240,7 @@
     if (window.ResizeObserver) new ResizeObserver(measure).observe(track);
 
     var dir = band.classList.contains('fv__band--bottom') ? -1 : 1;
-    var speed = dir > 0 ? 52 : 41;        /* px/秒。上下で変えて同じ動きに見えないようにする */
+    var speed = 44;                       /* px/秒。上下とも同じ速さ(向きだけ逆) */
 
     var offset = 0, prevTime = 0, velocity = 0;
     var dragging = false, startX = 0, startOffset = 0, lastX = 0, lastT = 0;
